@@ -3,6 +3,10 @@ genesisclient
 
 A Genesis (DeStatis et. al.) client for Python - in a very early stage.
 
+The goal here is to create a tool that allows for automated lookup and download of resources from several official statistics offices in Germany.
+
+Currently, downloading of tables in various formats works in many cases.
+
 ## Installation
 
 Download or clone, change to the directory containing `setup.py` and execute
@@ -14,9 +18,9 @@ Download or clone, change to the directory containing `setup.py` and execute
 
 The client needs configuration for the backend systems to work with. On the command line you reference the desired system using the `-s` parameter and the handle for that system (see below for examples).
 
-* DESTATIS: [www-genesis.destatis.de](https://www-genesis.destatis.de/)
-* LDNRW: [Landesdatenbank NRW](https://www.landesdatenbank.nrw.de/)
-* REGIONAL: [regionalstatistik.de](https://www.regionalstatistik.de/)
+* `DESTATIS`: [www-genesis.destatis.de](https://www-genesis.destatis.de/)
+* `LDNRW`: [Landesdatenbank NRW](https://www.landesdatenbank.nrw.de/)
+* `REGIONAL`: [regionalstatistik.de](https://www.regionalstatistik.de/)
 
 You might need a user account (user name and password) for the system.
 
@@ -28,7 +32,7 @@ Download the table with reference code `13211-03ir` from the "Landesdatenbank NR
 
     python -m genesisclient -s LDNRW -d 13211-03ir
 
-This writes a file 13211-03ir.csv to your current working directory.
+This writes a file `13211-03ir.csv` to your current working directory.
 
 The DESTATIS system requires a login for all operations. In order to test downloading here, fill in your credentials in the command beow and execute it:
 
