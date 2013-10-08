@@ -87,9 +87,36 @@ class GenesisClient(object):
                       kategorie=category
                       )
         result = client.service.Recherche(**params)
-        return result.trefferListe
+        root = etree.fromstring(result)
+        out = {
+            'meta': {},
+            'results': []
+        }
+        for element in root.iter("trefferUebersicht"):
+            otype = element.find("objektTyp")
+            num = element.find("trefferAnzahl")
+            if otype is not None and num is not None:
+                out['meta'][otype.text] = int(num.text)
+        for element in root.iter("trefferListe"):
 
-    def terms(self, filter='*', limit=500):
+            code = element.find('EVAS')
+            description = element.find('kurztext')
+            name = element.find('name')
+            if name is not None:
+                name = name.text
+            otype = element.find("objektTyp")
+            if otype is not None:
+                otype = otype.text
+            if code is not None:
+                out['results'].append({
+                    'id': code.text,
+                    'type': otype,
+                    'name': name,
+                    'description': clean(description.text)
+                })
+        return out
+
+    def terms(self, filter='*', limit=20):
         """
         Gives access to all terms which can be used for search. Example:
         filter='bev*' will return only terms starting with "bev". Can be used
@@ -103,8 +130,17 @@ class GenesisClient(object):
                       listenLaenge=str(limit),
                       sprache='de')
         result = client.service.BegriffeKatalog(**params)
-        if result.returnInfo.code == 0:
-            return result.begriffeKatalogEintraege
+        root = etree.fromstring(result)
+        out = []
+        for element in root.iter("begriffeKatalogEintraege"):
+            code = element.find('code')
+            inhalt = element.find('inhalt')
+            if code is not None:
+                out.append({
+                    'id': code.text,
+                    'description': clean(inhalt.text)
+                })
+        return out
 
     def properties(self, filter='*', criteria='Code', type="alle", limit=500):
         """
@@ -166,12 +202,18 @@ class GenesisClient(object):
                       bereich='Alle',
                       listenLaenge=str(limit),
                       sprache='de')
-        try:
-            result = client.service.MerkmalAuspraegungenKatalog(**params)
-            if result.returnInfo.code == 0:
-                return result.merkmalAuspraegungenKatalogEintraege
-        except:
-            return None
+        result = client.service.MerkmalAuspraegungenKatalog(**params)
+        root = etree.fromstring(result)
+        out = []
+        for element in root.iter("merkmalAuspraegungenKatalogEintraege"):
+            code = element.find('code')
+            inhalt = element.find('inhalt')
+            if code is not None:
+                out.append({
+                    'id': code.text,
+                    'description': clean(inhalt.text)
+                })
+        return out
 
     def property_data(self, property_code='*', selection='*',
                              criteria="Code", limit=500):
@@ -184,7 +226,19 @@ class GenesisClient(object):
                       listenLaenge=str(limit),
                       sprache='de')
         result = client.service.MerkmalDatenKatalog(**params)
-        print result
+        root = etree.fromstring(result)
+        out = []
+        for element in root.iter("merkmalDatenKatalogEintraege"):
+            code = element.find('code')
+            inhalt = element.find('inhalt')
+            beschriftungstext = element.find('beschriftungstext')
+            if code is not None:
+                out.append({
+                    'id': code.text,
+                    'description': clean(inhalt.text),
+                    'longdescription': clean(beschriftungstext.text)
+                })
+        return out
 
     def property_statistics(self, property_code='*', selection='*',
                              criteria="Code", limit=500):
@@ -390,8 +444,11 @@ class GenesisClient(object):
 
 def clean(s):
     """Clean up a string"""
+    if s is None:
+        return None
     s = s.replace("\n", " ")
     s = s.replace("  ", " ")
+    s = s.strip()
     return s
 
 
@@ -411,25 +468,60 @@ def download(client, args):
     open(path, 'wb').write(result)
 
 
+def search(client, args):
+    """
+    Search the catalog for a term
+    using options given via the command line
+    """
+    term = args.searchterm
+    if type(term) != unicode:
+        term = term.decode('utf8')
+    result = client.search(term)
+    for cat in result['meta'].keys():
+        if result['meta'][cat] > 0:
+            print "Hits of type '%s': %d" % (cat.upper(), result['meta'][cat])
+    for hit in result['results']:
+        otype = hit['type'].upper()
+        if otype == 'MERKMAL' or otype == 'STATISTIK':
+            print "%s %s %s" % (otype, clean(hit['name']), clean(hit['description']))
+        elif otype == 'TABELLE':
+            print "%s %s %s" % (otype, clean(hit['name']), clean(hit['description']))
+        elif otype == 'BEGRIFF':
+            print "%s %s" % (otype, clean(hit['name']))
+        else:
+            print "%s %s" % (hit['type'].upper(), hit)
+
+
 def lookup(client, args):
     """
     Lookup tables and print out info on found entries
     """
-    for stat in gc.statistics(filter=args.lookup):
+    term = args.lookup
+    if type(term) != unicode:
+        term = term.decode('utf8')
+    for stat in gc.statistics(filter=term):
         print "STATISTIC: %s %s" % (stat['id'], stat['description'])
-    for s in gc.statistic_data(statistic_code=args.lookup):
+    for s in gc.statistic_data(statistic_code=term):
         print "STATISTIC DATA: %s %s" % (s['id'], s['description'])
-    for s in gc.statistic_properties(statistic_code=args.lookup):
+    for s in gc.statistic_properties(statistic_code=term):
         print "STATISTIC PROPERTY: %s %s" % (s['id'], s['description'])
-    for s in gc.statistic_tables(statistic_code=args.lookup):
+    for s in gc.statistic_tables(statistic_code=term):
         print "STATISTIC TABLE: %s %s" % (s['id'], s['description'])
-    for prop in gc.properties(filter=args.lookup):
+    for prop in gc.properties(filter=term):
         print "PROPERTY: %s %s" % (prop['id'], prop['description'])
-    for table in gc.tables(filter=args.lookup):
+    if '*' not in term:
+        for prop in gc.property_occurrences(property_code=term):
+            print "PROPERTY OCCURRENCE: %s %s" % (prop['id'], prop['description'])
+    for prop in gc.property_data(property_code=term):
+        print "PROPERTY DATA: %s %s" % (prop['id'], prop['longdescription'])
+    for table in gc.tables(filter=term):
         print "TABLE: %s %s" % (table['id'], table['description'])
+    for term in gc.terms(filter=term):
+        print "TERM: %s %s" % (term['id'], term['description'])
 
 
 if __name__ == '__main__':
+    #logging.basicConfig(level='DEBUG')
     logging.basicConfig(level='WARN')
     # Our command-line options
     import sys
@@ -443,7 +535,10 @@ if __name__ == '__main__':
                    help='username for Genesis login')
     parser.add_argument('-l', '--lookup', dest='lookup', default=None,
                    metavar="FILTER",
-                   help='Get information on the table, property etc. with the name FILTER. * works as wild card.')
+                   help='Get information on the table, property etc. with the key named FILTER. * works as wild card.')
+    parser.add_argument('-g', '--search', dest='searchterm', default=None,
+                   metavar="SEARCHTERM",
+                   help='Find an item using an actual search engine. Should accept Lucene syntax.')
     parser.add_argument('-d', '--downlaod', dest='download', default=None,
                    metavar="TABLE_ID",
                    help='Download table with the ID TABLE_ID')
@@ -462,6 +557,8 @@ if __name__ == '__main__':
 
     if args.download is not None:
         download(gc, args)
+    elif args.searchterm is not None:
+        search(gc, args)
     elif args.lookup is not None:
         lookup(gc, args)
 
