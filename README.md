@@ -46,11 +46,11 @@ The DESTATIS and BAYERN backends require a login for all operations. Once you ha
 
 #### Specifying the output file format
 
-The parameter `-f` allows you to chose betweet `csv` (default), `xls` and `html` output.
+The parameter `-f` allows you to chose between `csv` (default), `xls` and `html` output.
 
     python -m genesisclient -s LDNRW -d 13211-03ir -f xls
 
-#### Selecting data for a specific region
+#### Selecting data for a specific region (experimental)
 
 Genesis systems use a location hierarchy depending on which system you work with. When requesting a data table, by default, the data is not restricted to a specific region. When working with the DESTATIS system, this usually means you get data for entire Germany. When requesting a specific location, different data is contained in the response, usually matching the requested region.
 
@@ -60,7 +60,9 @@ This example shows how to download data from table `13211-03ir` for the City of 
 
     python -m genesisclient -s LDNRW -d 13211-03ir --rs 05315
 
-### Finding resources
+This feaure is marked "experimental" here since it's for now it seems undeterministic when the --rs switch actually makes a difference.
+
+### Finding resources (experimental)
 
 In order to find resources, ultimately tables, for specific keywords, try the `-g` or `--search` option.
 
