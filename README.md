@@ -40,7 +40,7 @@ Download the table with reference code `13211-03ir` from the "Landesdatenbank NR
 
 This writes a file `13211-03ir.csv` to your current working directory.
 
-The DESTATIS and BAYERN backends require a login for all operations. Once you have screated an account on the desired backend system, you can pass user name and password via the `-u` and `-p` parameters:
+The DESTATIS and BAYERN backends require a login for all operations. Once you have created an account on the desired backend system, you can pass user name and password via the `-u` and `-p` parameters:
 
     python -m genesisclient -s DESTATIS -u YOUR_USERNAME -p YOUR_PASSWORD -d 14111-0001
 
