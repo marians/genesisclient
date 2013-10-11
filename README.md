@@ -9,10 +9,15 @@ Currently, downloading of tables in various formats works in many cases.
 
 ## Installation
 
-Download or clone, change to the directory containing `setup.py` and execute
+If you want to use pip:
+
+    pip install genesisclient
+
+The manual way: download or clone the code, change to the directory containing `setup.py` and execute
 
     python setup.py install
-    pip install suds lxml
+
+Then make sure the `lxml` and `suds` Python modules are installed.
 
 ## Supported backends
 
