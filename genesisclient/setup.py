@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 setup(name='genesisclient',
-      version='0.0.2',
+      version='0.0.3',
       description='Genesis (DeStatis et. al.) client for Python',
       author='Marian Steinbach',
       author_email='marian@sendung.de',

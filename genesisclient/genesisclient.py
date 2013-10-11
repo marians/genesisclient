@@ -17,7 +17,16 @@ class GenesisClient(object):
             },
             'REGIONAL': {
                 'webservice_url': 'https://www.regionalstatistik.de/genesisws'
-            }
+            },
+            'BAYERN': {
+                'webservice_url': 'https://www.statistikdaten.bayern.de/genesisWS'
+            },
+            #'SACHSEN': {
+            #    'webservice_url': 'http://www.statistik.sachsen.de/...'
+            #},
+            #'BILDUNG': {
+            #    'webservice_url': 'www.bildungsmonitoring.de/...'
+            #}
         }
         self.endpoints = {
             'TestService': '/services/TestService?wsdl',

@@ -19,8 +19,9 @@ Download or clone, change to the directory containing `setup.py` and execute
 The client needs configuration for the backend systems to work with. On the command line you reference the desired system using the `-s` parameter and the handle for that system (see below for examples).
 
 * `DESTATIS`: [www-genesis.destatis.de](https://www-genesis.destatis.de/)
-* `LDNRW`: [Landesdatenbank NRW](https://www.landesdatenbank.nrw.de/)
+* `LDNRW`: [landesdatenbank.nrw.de](https://www.landesdatenbank.nrw.de/)
 * `REGIONAL`: [regionalstatistik.de](https://www.regionalstatistik.de/)
+* `BAYERN`: [statistikdaten.bayern.de](https://www.statistikdaten.bayern.de)
 
 You might need a user account (user name and password) for the system.
 
@@ -34,7 +35,7 @@ Download the table with reference code `13211-03ir` from the "Landesdatenbank NR
 
 This writes a file `13211-03ir.csv` to your current working directory.
 
-The DESTATIS system requires a login for all operations. In order to test downloading here, fill in your credentials in the command beow and execute it:
+The DESTATIS and BAYERN backends require a login for all operations. Once you have screated an account on the desired backend system, you can pass user name and password via the `-u` and `-p` parameters:
 
     python -m genesisclient -s DESTATIS -u YOUR_USERNAME -p YOUR_PASSWORD -d 14111-0001
 
