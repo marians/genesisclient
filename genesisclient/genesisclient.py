@@ -24,9 +24,9 @@ class GenesisClient(object):
             #'SACHSEN': {
             #    'webservice_url': 'http://www.statistik.sachsen.de/...'
             #},
-            #'BILDUNG': {
-            #    'webservice_url': 'www.bildungsmonitoring.de/...'
-            #}
+            'BILDUNG': {
+                'webservice_url': 'https://www.bildungsmonitoring.de/bildungws'
+            }
         }
         self.endpoints = {
             'TestService': '/services/TestService?wsdl',
@@ -43,7 +43,8 @@ class GenesisClient(object):
         if site is None:
             raise Exception('No site given')
         if site not in self.sites:
-            raise ValueError('Given site does not exist (in pygenesis)')
+            sitekeys = ", ".join(sorted(self.sites.keys()))
+            raise ValueError('Site not known. Use one of %s.' % sitekeys)
         self.site = site
         self.username = None
         self.password = None
