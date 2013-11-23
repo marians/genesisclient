@@ -110,6 +110,6 @@ Now you can look up your known property:
 
 As a result you get not only properties, but also all kinds of related items, including - if available - tables which make use of the property.
 
-## Like agssearch?
+## Like genesisclient?
 
 Feel free to [tip me](https://www.gittip.com/marians/)!
