@@ -4,6 +4,8 @@ import suds
 import logging
 from lxml import etree
 
+gc = None
+
 
 class GenesisClient(object):
 
@@ -530,7 +532,7 @@ def lookup(client, args):
         print "TERM: %s %s" % (term['id'], term['description'])
 
 
-if __name__ == '__main__':
+def main():
     #logging.basicConfig(level='DEBUG')
     logging.basicConfig(level='WARN')
     # Our command-line options
@@ -623,3 +625,6 @@ if __name__ == '__main__':
 
     table = gc.table_export(table_code=tables[0].code)
     print table
+
+if __name__ == '__main__':
+    main()

@@ -1,13 +1,21 @@
-from distutils.core import setup
+# encoding: utf-8
+
+from setuptools import setup
 
 setup(name='genesisclient',
-      version='0.0.6',
+      version='0.0.7',
       description='Genesis (DeStatis et. al.) client for Python',
       author='Marian Steinbach',
       author_email='marian@sendung.de',
       url='https://github.com/marians/genesisclient',
-      py_modules=['genesisclient'],
+      license="MIT",
+      packages=['genesisclient'],
       install_requires=[
         'lxml',
-        'suds']
+        'suds'],
+      entry_points={
+        'console_scripts': [
+            'genesiscl = genesisclient:main'
+        ]
+      }
 )
