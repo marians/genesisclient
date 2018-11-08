@@ -416,22 +416,40 @@ class GenesisClient(object):
         """
         Return data for a given table
         """
-        client = self.init_service_client('DownloadService')
+        client = self.init_service_client('DownloadService_2010')
         params = dict(kennung=self.username,
                       passwort=self.password,
                       name=table_code,
                       bereich='Alle',
                       format=format,
-                      komprimierung=False,
+                      komprimieren=False,
+                      transponieren=False,
                       startjahr='1900',
                       endjahr='2100',
-                      zeitscheiben='',
+                      zeitscheiben='1',
+                      regionalmerkmal='',
                       regionalschluessel=regionalschluessel,
                       sachmerkmal='',
                       sachschluessel='',
+                      sachmerkmal2='',
+                      sachschluessel2='',
+                      sachmerkmal3='',
+                      sachschluessel3='',
+                      auftrag=False,
+                      stand='',
                       sprache='de',
                       )
         result = None
+
+        if len(regionalschluessel) == 8:
+            params['regionalmerkmal'] = 'GEMEIN'
+        elif len(regionalschluessel) == 5:
+            params['regionalmerkmal'] = 'KREISE'
+        elif len(regionalschluessel) == 3:
+            params['regionalmerkmal'] = 'REGBEZ'
+        else:
+            params['regionalmerkmal'] = 'DLAND'
+
         if format == 'xls':
             del params['format']
             result = client.service.ExcelDownload(**params)
