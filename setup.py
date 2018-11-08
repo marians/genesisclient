@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(name='genesisclient',
       version='0.1.0',
-      description='Genesis (DeStatis et. al.) client for Python',
+      description='Genesis (DeStatis et. al.) client for Python 2.x',
       author='Marian Steinbach',
       author_email='marian@sendung.de',
       url='https://github.com/marians/genesisclient',
