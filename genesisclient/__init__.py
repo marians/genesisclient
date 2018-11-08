@@ -32,10 +32,8 @@ class GenesisClient(object):
         }
         self.endpoints = {
             'TestService': '/services/TestService?wsdl',
-            #'RechercheService': '/services/RechercheService?wsdl',
             'RechercheService_2010': '/services/RechercheService_2010?wsdl',
-            'DownloadService': '/services/DownloadService?wsdl',
-            #'DownloadService_2010': '/services/DownloadService_2010?wsdl',
+            'DownloadService_2010': '/services/DownloadService_2010?wsdl',
             #'ExportService': '/services/ExportService?wsdl',
             #'ExportService_2010': '/services/ExportService_2010?wsdl',
             #'GEOMISService': '/services/GEOMISService?wsdl',
