@@ -88,7 +88,7 @@ class GenesisClient(object):
             "Datenquader", "Merkmal", "Statistik"
         """
         client = self.init_service_client('RechercheService_2010')
-        #print client
+        #print(client)
         params = dict(luceneString=searchterm,
                       kennung=self.username,
                       passwort=self.password,
@@ -133,7 +133,7 @@ class GenesisClient(object):
         to implement search term auto-completion.
         """
         client = self.init_service_client('RechercheService_2010')
-        #print client
+        #print(client)
         params = dict(kennung=self.username,
                       passwort=self.password,
                       filter=filter,
@@ -173,7 +173,7 @@ class GenesisClient(object):
         area
         """
         client = self.init_service_client('RechercheService_2010')
-        #print client
+        #print(client)
         params = dict(kennung=self.username,
                       passwort=self.password,
                       filter=filter,
@@ -262,7 +262,7 @@ class GenesisClient(object):
                       listenLaenge=str(limit),
                       sprache='de')
         result = client.service.MerkmalStatistikenKatalog(**params)
-        print result
+        print(result)
 
     def property_tables(self, property_code='*', selection='*', limit=500):
         client = self.init_service_client('RechercheService_2010')
@@ -274,7 +274,7 @@ class GenesisClient(object):
                       listenLaenge=str(limit),
                       sprache='de')
         result = client.service.MerkmalTabellenKatalog(**params)
-        print result
+        print(result)
 
     def statistics(self, filter='*', criteria='Code', limit=500):
         """
@@ -456,7 +456,7 @@ class GenesisClient(object):
             # Really nasty way to treat a multipart message...
             # (room for improvement)
             parts = result.split("\r\n")
-            for i in range(0, 12):
+            for _ in range(0, 12):
                 parts.pop(0)
             parts.pop()
             parts.pop()
@@ -465,8 +465,6 @@ class GenesisClient(object):
             result = client.service.TabellenDownload(**params)
             parts = result.split(result.split("\r\n")[1])
             data = parts[2].split("\r\n\r\n", 1)[-1]
-            #data = unicode(data.decode('latin-1'))
-            #data = unicode(data.decode('utf-8'))
             return data
 
 
@@ -489,7 +487,7 @@ def download(client, args):
     if args.regionalschluessel is not None and args.regionalschluessel != '*':
         rs = args.regionalschluessel
         path = '%s_%s.%s' % (args.download, args.regionalschluessel, args.format)
-    print "Downloading to file %s" % path
+    print("Downloading to file %s" % path)
     result = client.table_export(args.download,
             regionalschluessel=rs,
             format=args.format)
@@ -507,17 +505,17 @@ def search(client, args):
     result = client.search(term)
     for cat in result['meta'].keys():
         if result['meta'][cat] > 0:
-            print "Hits of type '%s': %d" % (cat.upper(), result['meta'][cat])
+            print("Hits of type '%s': %d" % (cat.upper(), result['meta'][cat]))
     for hit in result['results']:
         otype = hit['type'].upper()
         if otype == 'MERKMAL' or otype == 'STATISTIK':
-            print "%s %s %s" % (otype, clean(hit['name']), clean(hit['description']))
+            print("%s %s %s" % (otype, clean(hit['name']), clean(hit['description'])))
         elif otype == 'TABELLE':
-            print "%s %s %s" % (otype, clean(hit['name']), clean(hit['description']))
+            print("%s %s %s" % (otype, clean(hit['name']), clean(hit['description'])))
         elif otype == 'BEGRIFF':
-            print "%s %s" % (otype, clean(hit['name']))
+            print("%s %s" % (otype, clean(hit['name'])))
         else:
-            print "%s %s" % (hit['type'].upper(), hit)
+            print("%s %s" % (hit['type'].upper(), hit))
 
 
 def lookup(client, args):
@@ -528,24 +526,24 @@ def lookup(client, args):
     if type(term) != unicode:
         term = term.decode('utf8')
     for stat in gc.statistics(filter=term):
-        print "STATISTIC: %s %s" % (stat['id'], stat['description'])
+        print("STATISTIC: %s %s" % (stat['id'], stat['description']))
     for s in gc.statistic_data(statistic_code=term):
-        print "STATISTIC DATA: %s %s" % (s['id'], s['description'])
+        print("STATISTIC DATA: %s %s" % (s['id'], s['description']))
     for s in gc.statistic_properties(statistic_code=term):
-        print "STATISTIC PROPERTY: %s %s" % (s['id'], s['description'])
+        print("STATISTIC PROPERTY: %s %s" % (s['id'], s['description']))
     for s in gc.statistic_tables(statistic_code=term):
-        print "STATISTIC TABLE: %s %s" % (s['id'], s['description'])
+        print("STATISTIC TABLE: %s %s" % (s['id'], s['description']))
     for prop in gc.properties(filter=term):
-        print "PROPERTY: %s %s" % (prop['id'], prop['description'])
+        print("PROPERTY: %s %s" % (prop['id'], prop['description']))
     if '*' not in term:
         for prop in gc.property_occurrences(property_code=term):
-            print "PROPERTY OCCURRENCE: %s %s" % (prop['id'], prop['description'])
+            print("PROPERTY OCCURRENCE: %s %s" % (prop['id'], prop['description']))
     for prop in gc.property_data(property_code=term):
-        print "PROPERTY DATA: %s %s" % (prop['id'], prop['longdescription'])
+        print("PROPERTY DATA: %s %s" % (prop['id'], prop['longdescription']))
     for table in gc.tables(filter=term):
-        print "TABLE: %s %s" % (table['id'], table['description'])
+        print("TABLE: %s %s" % (table['id'], table['description']))
     for term in gc.terms(filter=term):
-        print "TERM: %s %s" % (term['id'], term['description'])
+        print("TERM: %s %s" % (term['id'], term['description']))
 
 
 def main():
@@ -590,57 +588,58 @@ def main():
     elif args.lookup is not None:
         lookup(gc, args)
 
-    # See? All I allow you to do is download stuff.
+    # From here on it's all work-in-progress code
     sys.exit()
 
     # submit a search
     result = gc.search('schule', limit=10, category='Tabelle')
+
     counter = 0
     for item in result:
-        #print counter, item.name, item.objektTyp, item.kurztext
+        print(counter, item.name, item.objektTyp, item.kurztext)
         counter += 1
 
     # retrieve terms satrting with 'a'.
     terms = gc.terms(filter='a*')
-    print "Terms list has", len(terms), "entries. Example:"
-    print (terms[0].inhalt)
+    print("Terms list has", len(terms), "entries. Example:")
+    print(terms[0].inhalt)
 
     # retrieve catalogue items starting with "11111"
     catalogue = gc.catalogue(filter='11111*')
-    print "Catalogue result has", len(catalogue), "entries. Example:"
-    print (catalogue[0].code,
-           catalogue[0].beschriftungstext.replace("\n", " "),
-           catalogue[0].inhalt)
+    print("Catalogue result has", len(catalogue), "entries. Example:")
+    print(catalogue[0].code,
+          catalogue[0].beschriftungstext.replace("\n", " "),
+          catalogue[0].inhalt)
 
     # retrieve properties
     properties = gc.properties(filter='B*', type='sachlich')
-    print "Properties list has", len(properties), "entries. Example:"
-    print (properties[0].code, properties[0].inhalt)
+    print("Properties list has", len(properties), "entries. Example:")
+    print(properties[0].code, properties[0].inhalt)
 
     # retrieve occurences for a property
     occurences = gc.property_occurrences(property_code=properties[0].code)
-    print "Occurrences list has", len(occurences), "entries. Example:"
-    print (occurences[0].code, occurences[0].inhalt)
+    print("Occurrences list has", len(occurences), "entries. Example:")
+    print(occurences[0].code, occurences[0].inhalt)
 
     # retrieve data for a property
     data = gc.property_data(property_code=properties[0].code)
-    print "Data list has", len(data), "entries. Example:"
-    print (data[0].code,
+    print("Data list has", len(data), "entries. Example:")
+    print(data[0].code,
            data[0].inhalt,
            data[0].beschriftungstext.replace("\n", " "))
 
     statistics = gc.property_statistics(property_code=properties[0].code)
-    print "Statistics list has", len(statistics), "entries. Example:"
-    print (statistics[0].code,
-           statistics[0].inhalt.replace("\n", " "))
+    print("Statistics list has", len(statistics), "entries. Example:")
+    print(statistics[0].code,
+          statistics[0].inhalt.replace("\n", " "))
 
     tables = gc.property_tables(property_code=properties[0].code)
-    print "Tables list has", len(statistics), "entries. Example:"
-    print (tables[0].code,
-           tables[0].inhalt.replace("\n", " "))
+    print("Tables list has", len(statistics), "entries. Example:")
+    print(tables[0].code,
+          tables[0].inhalt.replace("\n", " "))
 
     table = gc.table_export(table_code=tables[0].code)
-    print table
+    print(table)
 
 if __name__ == '__main__':
     main()
