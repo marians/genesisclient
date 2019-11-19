@@ -17,7 +17,7 @@ The manual way: download or clone the code, change to the directory containing `
 
     python setup.py install
 
-Then make sure the `lxml` and `suds` Python modules are installed.
+Then make sure the `lxml` and `suds-py3` Python modules are installed.
 
 ## Supported backends
 
