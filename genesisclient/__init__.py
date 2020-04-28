@@ -33,8 +33,8 @@ class GenesisClient(object):
             'TestService': '/services/TestService?wsdl',
             #'RechercheService': '/services/RechercheService?wsdl',
             'RechercheService_2010': '/services/RechercheService_2010?wsdl',
-            'DownloadService': '/services/DownloadService?wsdl',
-            #'DownloadService_2010': '/services/DownloadService_2010?wsdl',
+            # 'DownloadService': '/services/DownloadService?wsdl',
+            'DownloadService_2010': '/services/DownloadService_2010?wsdl',
             #'ExportService': '/services/ExportService?wsdl',
             #'ExportService_2010': '/services/ExportService_2010?wsdl',
             #'GEOMISService': '/services/GEOMISService?wsdl',
@@ -417,19 +417,27 @@ class GenesisClient(object):
         """
         Return data for a given table
         """
-        client = self.init_service_client('DownloadService')
+        client = self.init_service_client('DownloadService_2010')
         params = dict(kennung=self.username,
                       passwort=self.password,
                       name=table_code,
                       bereich='Alle',
                       format=format,
-                      komprimierung=False,
+                      komprimieren=False,
+                      transponieren=False,
                       startjahr='1900',
                       endjahr='2100',
                       zeitscheiben='',
+                      regionalmerkmal = '',
                       regionalschluessel=regionalschluessel,
                       sachmerkmal='',
                       sachschluessel='',
+                      sachmerkmal2='',
+                      sachschluessel2='',
+                      sachmerkmal3='',
+                      sachschluessel3='',
+                      auftrag=False,
+                      stand='',
                       sprache='de',
                       )
         result = None
@@ -445,7 +453,7 @@ class GenesisClient(object):
             parts.pop()
             return "\r\n".join(parts)
         else:
-            result = client.service.TabellenDownload(**params)
+            result = client.service.TabellenDownload(**params).decode()
             parts = result.split(result.split("\r\n")[1])
             data = parts[2].split("\r\n\r\n", 1)[-1]
             #data = unicode(data.decode('latin-1'))
@@ -476,7 +484,7 @@ def download(client, args):
     result = client.table_export(args.download,
             regionalschluessel=rs,
             format=args.format)
-    open(path, 'wb').write(result)
+    open(path, 'w').write(result)
 
 
 def search(client, args):
