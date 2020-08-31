@@ -538,7 +538,7 @@ def main():
     import sys
     import argparse
     parser = argparse.ArgumentParser(description='These are todays options:')
-    parser.add_argument('-s', dest='site', default=None,
+    parser.add_argument('-s', dest='site', default=None, required=True,
                    help='Genesis site to connect to (DESTATIS or LDNRW)')
     parser.add_argument('-u', dest='username', default='',
                    help='username for Genesis login')
