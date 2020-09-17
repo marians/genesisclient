@@ -17,5 +17,6 @@ setup(name='genesisclient',
         'console_scripts': [
             'genesiscl = genesisclient:main'
         ]
-      }
+      },
+      setup_requires=['wheel']
 )
